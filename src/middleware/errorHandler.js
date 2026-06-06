@@ -17,7 +17,7 @@ export const errorHandler = (err, req, res, next) => {
   // Усі інші помилки — як внутрішні
  res.status(500).json({
   message: isProd
-   ? "повідомлення про помилку,"
+   ? "Internal Server Error"
    : err.message,
  });
 };
