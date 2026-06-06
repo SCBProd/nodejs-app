@@ -1,53 +1,53 @@
-// src/controllers/studentsController.js
+// src/controllers/notesController.js
 import createHttpError from 'http-errors';
-import { Student } from '../models/student.js';
+import { Note } from '../models/note.js';
 
 // Отримати список усіх студентів
-export const getStudents = async (req, res) => {
-  const students = await Student.find();
-  res.status(200).json(students);
+export const getnotes = async (req, res) => {
+  const notes = await Note.find();
+  res.status(200).json(notes);
 };
 
 // Отримати одного студента за id
-export const getStudentById = async (req, res) => {
-  const { studentId } = req.params;
-  const student = await Student.findById(studentId);
+export const getnoteById = async (req, res) => {
+  const { noteId } = req.params;
+  const note = await Note.findById( noteId );
 
-  if (!student) {
-	throw createHttpError(404, 'Student not found');
+  if (!note) {
+	throw createHttpError(404, 'note not found');
   }
 
-  res.status(200).json(student);
+  res.status(200).json(note);
 };
-export const createStudent = async (req, res) => {
-  const student = await Student.create(req.body);
-  res.status(201).json(student);
+export const createnote = async (req, res) => {
+  const note = await Note.create(req.body);
+  res.status(201).json(note);
 };
-export const deleteStudent = async (req, res) => {
-  const { studentId } = req.params;
-  const student = await Student.findOneAndDelete({
-    _id: studentId,
+export const deletenote = async (req, res) => {
+  const { noteId } = req.params;
+  const note = await Note.findOneAndDelete({
+    _id: noteId,
   });
 
-  if (!student) {
-    throw createHttpError(404, "Student not found");
+  if (!note) {
+    throw createHttpError(404, "note not found");
   }
 
-  res.status(200).json(student);
+  res.status(200).json(note);
 };
 
-export const updateStudent = async (req, res) => {
-  const { studentId } = req.params;
+export const updatenote = async (req, res) => {
+  const { noteId } = req.params;
 
-  const student = await Student.findOneAndUpdate(
-    { _id: studentId }, // Шукаємо по id
+  const note = await Note.findOneAndUpdate(
+    { _id: noteId }, // Шукаємо по id
     req.body,
     { returnDocument: "after" }, // повертаємо оновлений документ
   );
 
-  if (!student) {
-	throw createHttpError(404, 'Student not found');
+  if (!note) {
+	throw createHttpError(404, 'note not found');
   }
 
-  res.status(200).json(student);
+  res.status(200).json(note);
 };
