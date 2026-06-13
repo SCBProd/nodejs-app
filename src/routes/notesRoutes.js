@@ -17,19 +17,11 @@ import {
 
 const router = Router();
 
-// GET all notes + filter + pagination
-router.get('/notes', getAllNotesSchema, getAllNotes);
 
-// GET note by id
-router.get('/notes/:noteId', noteIdSchema, getNoteById);
-
-// CREATE note
-router.post('/notes', createNoteSchema, createNote);
-
-// DELETE note
-router.delete('/notes/:noteId', noteIdSchema, deleteNote);
-
-// UPDATE note
-router.patch('/notes/:noteId', updateNoteSchema, updateNote);
+router.get('/', getAllNotesSchema, getAllNotes);
+router.get('/:noteId', noteIdSchema, getNoteById);
+router.post('/', createNoteSchema, createNote);
+router.delete('/:noteId', noteIdSchema, deleteNote);
+router.patch('/:noteId', updateNoteSchema, updateNote);
 
 export default router;
