@@ -1,29 +1,30 @@
-// src/models/student.js
-import { model } from 'mongoose';
-import { Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
+import { TAGS } from '../constants/tags.js';
 
 const noteSchema = new Schema(
- {
-  title: {
-   type: String,
-   required: true,
-   trim: true, // прибирає пробіли на початку та в кінці
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    content: {
+      type: String,
+      required: false,
+      trim: true,
+      default: '',
+    },
+    tag: {
+      type: String,
+      required: false,
+      default: 'Todo',
+      enum: TAGS,
+      index: true,
+    },
   },
-  content: {
-   type: String,
-    required: false,
-    trim: true,
-    default: '',
+  {
+    timestamps: true,
   },
-  tag: {
-   type: String,
-    required: false,
-    default: 'Todo',
-   enum: ['Work', 'Personal', 'Meeting', 'Shopping', 'Ideas', 'Travel', 'Finance', 'Health', 'Important', 'Todo',  ],
-  },
- },
- {
-  timestamps: true,
- },
 );
+
 export const Note = model('Note', noteSchema);

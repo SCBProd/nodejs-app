@@ -1,6 +1,5 @@
-// src/routes/notesRoutes.js
-
 import { Router } from 'express';
+
 import {
   getAllNotes,
   getNoteById,
@@ -9,12 +8,28 @@ import {
   updateNote,
 } from '../controllers/notesController.js';
 
+import {
+  getAllNotesSchema,
+  noteIdSchema,
+  createNoteSchema,
+  updateNoteSchema,
+} from '../validations/notesValidation.js';
+
 const router = Router();
 
-router.get('/notes', getAllNotes);
-router.get('/notes/:noteId', getNoteById);
-router.post('/notes', createNote);
-router.delete('/notes/:noteId', deleteNote);
-router.patch('/notes/:noteId', updateNote);
+// GET all notes + filter + pagination
+router.get('/notes', getAllNotesSchema, getAllNotes);
+
+// GET note by id
+router.get('/notes/:noteId', noteIdSchema, getNoteById);
+
+// CREATE note
+router.post('/notes', createNoteSchema, createNote);
+
+// DELETE note
+router.delete('/notes/:noteId', noteIdSchema, deleteNote);
+
+// UPDATE note
+router.patch('/notes/:noteId', updateNoteSchema, updateNote);
 
 export default router;

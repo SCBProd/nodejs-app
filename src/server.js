@@ -1,35 +1,37 @@
-// src/server.js
-
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
+import { errors } from 'celebrate';
 
 import { connectMongoDB } from './db/connectMongoDB.js';
-import { logger } from './middleware/logger.js';
 
+import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
-import studentsRoutes from './routes/notesRoutes.js';
+import notesRoutes from './routes/notesRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
-// глобальні middleware
+// middleware
 app.use(logger);
-app.use(express.json({
-  limit: '100kb', // максимум 100 кілобайт
-}));
+app.use(express.json({ limit: '100kb' }));
 app.use(cors());
 
+// routes
+app.use(notesRoutes);
 
-// підключаємо групу маршрутів студента
-app.use(studentsRoutes);
-
-// 404 і обробник помилок — наприкінці ланцюжка
+// 404
 app.use(notFoundHandler);
+
+// celebrate validation errors
+app.use(errors());
+
+// global error handler
 app.use(errorHandler);
 
+// DB + server start
 await connectMongoDB();
 
 app.listen(PORT, () => {
