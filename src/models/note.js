@@ -10,21 +10,22 @@ const noteSchema = new Schema(
     },
     content: {
       type: String,
-      required: false,
-      trim: true,
       default: '',
+      trim: true,
     },
     tag: {
       type: String,
       required: false,
       default: 'Todo',
       enum: TAGS,
-      index: true,
     },
   },
   {
     timestamps: true,
   },
 );
+
+// ✅ правильний індекс (як вимагає завдання)
+noteSchema.index({ tag: 1 });
 
 export const Note = model('Note', noteSchema);

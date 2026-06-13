@@ -9,36 +9,36 @@ export const getAllNotes = async (req, res) => {
     search,
   } = req.query;
 
-  const filter = {};
+  const skip = (page - 1) * perPage;
+
+  // базовий query через chain methods (як вимагають)
+  let query = Note.find();
 
   if (tag) {
-    filter.tag = tag;
+    query = query.where('tag').equals(tag);
   }
 
   if (search) {
-    filter.$or = [
-      {
-        title: {
-          $regex: search,
-          $options: 'i',
-        },
-      },
-      {
-        content: {
-          $regex: search,
-          $options: 'i',
-        },
-      },
-    ];
+    query = query.where({
+      $or: [
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } },
+      ],
+    });
   }
 
-  const skip = (page - 1) * perPage;
-
-  const totalNotes = await Note.countDocuments(filter);
-
-  const notes = await Note.find(filter)
-    .skip(skip)
-    .limit(perPage);
+  // паралельно: notes + total count
+  const [notes, totalNotes] = await Promise.all([
+    query
+      .skip(skip)
+      .limit(Number(perPage))
+      .exec(),
+    Note.countDocuments(
+      tag || search
+        ? query.getFilter()
+        : {},
+    ),
+  ]);
 
   const totalPages = Math.ceil(totalNotes / perPage);
 
@@ -83,9 +83,11 @@ export const deleteNote = async (req, res) => {
 export const updateNote = async (req, res) => {
   const { noteId } = req.params;
 
-  const note = await Note.findByIdAndUpdate(noteId, req.body, {
-    new: true,
-  });
+  const note = await Note.findByIdAndUpdate(
+    noteId,
+    req.body,
+    { returnDocument: 'after' }
+  );
 
   if (!note) {
     throw createHttpError(404, 'note not found');
