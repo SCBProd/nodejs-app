@@ -11,7 +11,6 @@ export const getAllNotes = async (req, res) => {
 
   const skip = (page - 1) * perPage;
 
-  // базовий query ТІЛЬКИ для поточного користувача
   let query = Note.find().where('userId').equals(req.user._id);
 
   if (tag) {
@@ -93,7 +92,9 @@ export const updateNote = async (req, res) => {
       userId: req.user._id,
     },
     req.body,
-    { new: true },
+    {
+      returnDocument: 'after',
+    },
   );
 
   if (!note) {
