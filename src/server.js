@@ -12,7 +12,6 @@ import { errorHandler } from './middleware/errorHandler.js';
 import notesRoutes from './routes/notesRoutes.js';
 
 import authRoutes from './routes/authRoutes.js';
-import studentsRoutes from './routes/studentsRoutes.js';
 
 import cookieParser from "cookie-parser";
 const app = express();
@@ -43,7 +42,7 @@ app.listen(PORT, () => {
 });
 
 app.use(authRoutes);
-app.use(studentsRoutes);
+
 
 app.use(express.json());
 app.use(cors());
