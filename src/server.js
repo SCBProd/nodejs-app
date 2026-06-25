@@ -34,6 +34,12 @@ app.use(errors());
 // global error handler
 app.use(errorHandler);
 
+app.use(authRoutes);
+
+app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
+
 // DB + server start
 await connectMongoDB();
 
@@ -41,9 +47,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-app.use(authRoutes);
 
-
-app.use(express.json());
-app.use(cors());
-app.use(cookieParser());
