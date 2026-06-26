@@ -1,15 +1,16 @@
 import { Joi, Segments } from 'celebrate';
-import mongoose from 'mongoose';
+import { isValidObjectId } from 'mongoose';
+
 import { TAGS } from '../constants/tags.js';
 
-const isValidObjectId = (value, helpers) => {
-  if (!mongoose.isValidObjectId(value)) {
+const objectIdValidator = (value, helpers) => {
+  if (!isValidObjectId(value)) {
     return helpers.error('any.invalid');
   }
+
   return value;
 };
 
-// GET /notes
 export const getAllNotesSchema = {
   [Segments.QUERY]: Joi.object({
     page: Joi.number().integer().min(1).default(1),
@@ -19,39 +20,31 @@ export const getAllNotesSchema = {
   }),
 };
 
-// GET /notes/:noteId
 export const noteIdSchema = {
   [Segments.PARAMS]: Joi.object({
-    noteId: Joi.string().custom(isValidObjectId).required(),
+    noteId: Joi.string().custom(objectIdValidator).messages({
+      'any.invalid': 'Invalid note id',
+    }),
   }),
 };
 
-// POST /notes
 export const createNoteSchema = {
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(1).required(),
-    content: Joi.string().allow('').optional(),
+    content: Joi.string().allow(''),
     tag: Joi.string().valid(...TAGS),
   }),
 };
 
-// PATCH /notes/:noteId
 export const updateNoteSchema = {
   [Segments.PARAMS]: Joi.object({
-    noteId: Joi.string().custom(isValidObjectId).required(),
+    noteId: Joi.string().custom(objectIdValidator).messages({
+      'any.invalid': 'Invalid note id',
+    }),
   }),
-
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(1),
     content: Joi.string().allow(''),
     tag: Joi.string().valid(...TAGS),
-  }).or('title', 'content', 'tag'),
-};
-
-// REGISTER USER
-export const registerUserSchema = {
-  [Segments.BODY]: Joi.object({
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).required(),
-  }),
+  }).min(1),
 };

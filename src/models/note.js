@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+
 import { TAGS } from '../constants/tags.js';
 
 const noteSchema = new Schema(
@@ -15,9 +16,9 @@ const noteSchema = new Schema(
     },
     tag: {
       type: String,
-      required: false,
-      default: 'Todo',
       enum: TAGS,
+      default: 'Todo',
+      index: true,
     },
     userId: {
       type: Schema.Types.ObjectId,
@@ -27,11 +28,10 @@ const noteSchema = new Schema(
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 
-// індекси для оптимізації запитів
-noteSchema.index({ tag: 1 });
-noteSchema.index({ userId: 1 });
+noteSchema.index({ tag: 1, userId: 1 });
 
 export const Note = model('Note', noteSchema);
